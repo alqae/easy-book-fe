@@ -14,13 +14,17 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form';
+import { useAppDispatch } from '@/store/hooks';
+import { logIn } from '@/store/slices/auth.slice';
 
 const formSchema = Yup.object({
   email: Yup.string().email().required(),
-  password: Yup.string().min(6).required(),
+  password: Yup.string().required(),
 });
 
 export const LoginPage: React.FC = () => {
+  const dispatch = useAppDispatch();
+
   const form = useForm<Yup.InferType<typeof formSchema>>({
     defaultValues: {
       email: '',
@@ -29,9 +33,7 @@ export const LoginPage: React.FC = () => {
     resolver: yupResolver(formSchema),
   });
 
-  const onSubmit = (data: Yup.InferType<typeof formSchema>) => {
-    console.log(data);
-  };
+  const onSubmit = (data: Yup.InferType<typeof formSchema>) => dispatch(logIn(data));
 
   return (
     <>

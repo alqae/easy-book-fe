@@ -2,16 +2,21 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { Outlet, useNavigate } from 'react-router';
 
+import { selectIsAuthenticated } from '@/store/slices/auth.slice';
 import { buttonVariants } from '@/components/ui/button';
+import { useAppSelector } from '@/store/hooks';
 import { cn } from '@/lib/utils';
 
 export const UnauthenticatedRoute: React.FC = () => {
   const navigate = useNavigate();
-  const isAuthenticated = false;
 
-  if (isAuthenticated) {
-    navigate('/home');
-  }
+  const isAuthenticated = useAppSelector(selectIsAuthenticated);
+
+  React.useEffect(() => {
+    if (isAuthenticated) {
+      navigate('/');
+    }
+  }, [isAuthenticated, navigate]);
 
   return (
     <div className="container relative h-full flex-col items-center justify-center md:grid">

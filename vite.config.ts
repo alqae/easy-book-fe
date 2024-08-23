@@ -13,6 +13,7 @@ export default defineConfig({
       '@/lib': resolve(__dirname, './src/lib'),
       '@/components': resolve(__dirname, './src/components'),
       '@/pages': resolve(__dirname, './src/pages'),
+      '@/types': resolve(__dirname, './src/types'),
     },
   },
 })
