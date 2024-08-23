@@ -19,12 +19,15 @@
     "prettier"
   ],
   "rules": {
+    "import/prefer-default-export": "off",
     "react/function-component-definition": "off",
     "@typescript-eslint/indent": "off",
     "@typescript-eslint/explicit-function-return-type": "off",
     "react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx", ".ts", ".tsx"] }],
     "react/prop-types": "off",
+    "import/extensions": "off",
     "react/button-has-type": "off",
+    "react/jsx-props-no-spreading": "off",
     "import/no-extraneous-dependencies": [
       "error",
       {
