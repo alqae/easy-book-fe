@@ -65,5 +65,11 @@
   }
   body {
     @apply bg-background text-foreground;
+    height: 100vh;
+    overflow-y: auto;
+  }
+
+  #root {
+    height: 100%;
   }
 }
