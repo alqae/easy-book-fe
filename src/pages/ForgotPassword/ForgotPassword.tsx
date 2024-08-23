@@ -14,6 +14,8 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form';
+import { useAppDispatch, useAppSelector } from '@/store/hooks';
+import { forgotPassword, resetPassword, selectIsLoading } from '@/store/slices/auth.slice';
 
 const forgotPasswordFormSchema = Yup.object({
   email: Yup.string().email().required(),
@@ -21,7 +23,7 @@ const forgotPasswordFormSchema = Yup.object({
 
 const resetPasswordFormSchema = Yup.object({
   token: Yup.string().required(),
-  password: Yup.string().min(6).required(),
+  password: Yup.string().required().min(6),
   confirmPassword: Yup.string()
     .oneOf([Yup.ref('password')], 'Passwords must match')
     .required(),
@@ -29,7 +31,11 @@ const resetPasswordFormSchema = Yup.object({
 
 export const ForgotPasswordPage: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
-  const [wasInvited, setWasInvited] = React.useState(false);
+  const [isRestoringPassword, setIsRestoringPassword] = React.useState(false);
+
+  const isLoading = useAppSelector(selectIsLoading);
+
+  const dispatch = useAppDispatch();
 
   const resetPasswordForm = useForm<Yup.InferType<typeof resetPasswordFormSchema>>({
     defaultValues: {
@@ -47,23 +53,21 @@ export const ForgotPasswordPage: React.FC = () => {
     resolver: yupResolver(forgotPasswordFormSchema),
   });
 
-  const onSubmitForgotPassword = (data: Yup.InferType<typeof forgotPasswordFormSchema>) => {
-    console.log(data);
-  };
+  const onSubmitForgotPassword = (data: Yup.InferType<typeof forgotPasswordFormSchema>) =>
+    dispatch(forgotPassword(data));
 
-  const onSubmitResetPassword = (data: Yup.InferType<typeof resetPasswordFormSchema>) => {
-    console.log(data);
-  };
+  const onSubmitResetPassword = (data: Yup.InferType<typeof resetPasswordFormSchema>) =>
+    dispatch(resetPassword(data));
 
   React.useEffect(() => {
     if (searchParams.get('token')) {
-      setWasInvited(true);
+      setIsRestoringPassword(true);
       resetPasswordForm.setValue('token', searchParams.get('token') as string);
       // TODO: validate token on load page to prevent token invalids after submit
     }
 
     return () => {
-      setWasInvited(false);
+      setIsRestoringPassword(false);
       setSearchParams({});
     };
   }, [resetPasswordForm, searchParams, setSearchParams]);
@@ -72,16 +76,16 @@ export const ForgotPasswordPage: React.FC = () => {
     <>
       <div className="flex flex-col space-y-2 text-center">
         <h1 className="text-2xl font-semibold tracking-tight">
-          {wasInvited ? 'Reset Password' : 'Forgot Password'}
+          {isRestoringPassword ? 'Reset Password' : 'Forgot Password'}
         </h1>
         <p className="text-sm text-muted-foreground">
-          {wasInvited
+          {isRestoringPassword
             ? "Don't worry, we'll send you an email to reset your password"
             : 'Now you can reset your password'}
         </p>
       </div>
 
-      {wasInvited ? (
+      {isRestoringPassword ? (
         <Form {...resetPasswordForm}>
           <form
             className="grid gap-6"
@@ -90,11 +94,15 @@ export const ForgotPasswordPage: React.FC = () => {
             <FormField
               control={resetPasswordForm.control}
               name="password"
-              render={({ field }) => (
+              render={() => (
                 <FormItem>
                   <FormLabel>Password</FormLabel>
                   <FormControl>
-                    <Input type="password" {...field} />
+                    <Input
+                      type="password"
+                      autoComplete="off"
+                      {...resetPasswordForm.register('password')}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -108,14 +116,16 @@ export const ForgotPasswordPage: React.FC = () => {
                 <FormItem>
                   <FormLabel>Confirm Password</FormLabel>
                   <FormControl>
-                    <Input type="password" {...field} />
+                    <Input type="password" autoComplete="off" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
 
-            <Button type="submit">Reset Password</Button>
+            <Button type="submit" disabled={isLoading}>
+              Reset Password
+            </Button>
           </form>
         </Form>
       ) : (
@@ -138,7 +148,9 @@ export const ForgotPasswordPage: React.FC = () => {
               )}
             />
 
-            <Button type="submit">Send Link</Button>
+            <Button type="submit" disabled={isLoading}>
+              Send Link
+            </Button>
           </form>
         </Form>
       )}
