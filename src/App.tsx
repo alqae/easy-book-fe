@@ -20,9 +20,6 @@ import {
 const Router: React.FC = () => (
   <Routes>
     {/* Public routes */}
-    <Route path="/" element={<HomePage />} />
-    <Route path="/search" element={<SearchPage />} />
-    <Route path="/business/:id" element={<BusinessDetailPage />} />
 
     {/* Unauthenticated routes */}
     <Route element={<UnauthenticatedRoute />}>
@@ -34,6 +31,9 @@ const Router: React.FC = () => (
     {/* Authenticated routes */}
     <Route element={<AuthenticatedRoute />}>
       <Route path="/profile" element={<ProfilePage />} />
+      <Route path="/" element={<HomePage />} />
+      <Route path="/business/:id" element={<BusinessDetailPage />} />
+      <Route path="/search" element={<SearchPage />} />
     </Route>
 
     {/* Status pages */}
