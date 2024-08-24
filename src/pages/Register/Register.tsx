@@ -54,6 +54,12 @@ export const RegisterPage: React.FC = () => {
   const [getCitiesByCountry, { data: cities = [] }] = useLazyGetCitiesByCountryQuery();
   const { data: countries = [] } = useGetCountriesQuery();
 
+  const uniqueCities = React.useMemo(() => {
+    const allCities = new Set<string>();
+    cities.forEach((city) => allCities.add(city.name));
+    return Array.from(allCities);
+  }, [cities]);
+
   const dispatch = useAppDispatch();
 
   const form = useForm<Yup.InferType<typeof formSchema>>({
@@ -85,12 +91,6 @@ export const RegisterPage: React.FC = () => {
       setSearchParams({});
     };
   }, [form, searchParams, setSearchParams]);
-
-  const uniqueCities = React.useMemo(() => {
-    const allCities = new Set<string>();
-    cities.forEach((city) => allCities.add(city.name));
-    return Array.from(allCities);
-  }, [cities]);
 
   return (
     <>

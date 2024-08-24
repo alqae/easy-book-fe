@@ -54,6 +54,8 @@ export const resetPassword = createAsyncThunk<ApiResponse<void>, ResetPasswordRe
   },
 );
 
+export const logOut = createAsyncThunk('auth/logOut', async () => {});
+
 export const authSlice = createSlice({
   name: 'auth',
   initialState,

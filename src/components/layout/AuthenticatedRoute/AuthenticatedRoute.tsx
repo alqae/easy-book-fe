@@ -1,16 +1,29 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { FaUser } from 'react-icons/fa6';
+import { GrPowerShutdown } from 'react-icons/gr';
 import { Outlet, useNavigate } from 'react-router';
 
-import { useAppSelector } from '@/store/hooks';
-import { selectIsAuthenticated } from '@/store/slices/auth.slice';
-import { Button, buttonVariants } from '@/components/ui/button';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { logOut, selectIsAuthenticated } from '@/store/slices/auth.slice';
+import { buttonVariants } from '@/components/ui/button';
+import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { cn } from '@/lib/utils';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 
 const year = new Date().getFullYear();
 
 export const AuthenticatedRoute: React.FC = () => {
   const navigate = useNavigate();
+
+  const dispatch = useAppDispatch();
   const isAuthenticated = useAppSelector(selectIsAuthenticated);
 
   React.useEffect(() => {
@@ -20,17 +33,37 @@ export const AuthenticatedRoute: React.FC = () => {
   }, [isAuthenticated, navigate]);
 
   return (
-    <div className="min-h-screen flex flex-col flex-nowrap">
-      <header className="bg-white border-b p-4 flex justify-between items-center">
-        <span>EasyBook</span>
+    <div className="min-h-screen max-h-screen flex flex-col flex-nowrap">
+      <header className="bg-white border-b p-4">
+        <div className="container flex justify-between items-center">
+          <Link to="/">EasyBook</Link>
 
-        <div className="space-x-2">
-          <Link to="/dashboard" className={cn(buttonVariants({ variant: 'link' }), 'underline')}>
-            Need Help?
-          </Link>
+          <div className="flex items-center gap-2">
+            <Link to="/dashboard" className={cn(buttonVariants({ variant: 'link' }), 'underline')}>
+              Need Help?
+            </Link>
 
-          <Button variant="default">Login</Button>
-          <Button variant="secondary">Register</Button>
+            <DropdownMenu>
+              <DropdownMenuTrigger>
+                <Avatar className="inline-block">
+                  <AvatarImage src="https://github.com/shadcn.png" alt="@shadcn" />
+                  <AvatarFallback>CN</AvatarFallback>
+                </Avatar>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent>
+                <DropdownMenuLabel>My Account</DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onClick={() => navigate('/profile')}>
+                  <FaUser />
+                  <span>Profile</span>
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => dispatch(logOut())}>
+                  <GrPowerShutdown />
+                  <span>Log out</span>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
         </div>
       </header>
 
