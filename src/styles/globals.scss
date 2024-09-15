@@ -29,6 +29,9 @@
     --chart-3: 197 37% 24%;
     --chart-4: 43 74% 66%;
     --chart-5: 27 87% 67%;
+    --tw-bg-scrollbar-track: theme('colors.scrollbar-track');
+    --tw-bg-scrollbar-thumb: theme('colors.scrollbar-thumb');
+    --tw-bg-scrollbar-thumb-hover: theme('colors.scrollbar-thumb-hover');
   }
 
   .dark {
@@ -63,13 +66,37 @@
   * {
     @apply border-border;
   }
+
   body {
     @apply bg-background text-foreground;
     height: 100vh;
-    overflow-y: auto;
+    overflow-y: hidden;
   }
 
   #root {
     height: 100%;
   }
+}
+
+/* Styles for scrollbar in WebKit browsers (Chrome, Safari) */
+::-webkit-scrollbar {
+  width: 8px;
+  /* Width of the scrollbar */
+}
+
+::-webkit-scrollbar-track {
+  background: var(--tw-bg-scrollbar-track);
+  /* Color of the scrollbar track */
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--tw-bg-scrollbar-thumb);
+  /* Color of the scrollbar thumb */
+  border-radius: 4px;
+  /* Border radius of the scrollbar thumb */
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--tw-bg-scrollbar-thumb-hover);
+  /* Color of the scrollbar thumb when hovered */
 }

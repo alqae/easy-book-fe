@@ -1,5 +1,9 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
+import { isRejectedWithValue, Middleware } from '@reduxjs/toolkit';
 
+import { Country, City, User } from '@/types/models';
+import { toast } from '@/components/ui/use-toast';
+import { UserRole } from '@/types/enums';
 import {
   ApiResponse,
   AuthenticationSuccessResponse,
@@ -7,19 +11,39 @@ import {
   LoginRequest,
   RegisterRequest,
   ResetPasswordRequest,
+  UpdatePasswordRequest,
+  UpdateProfileRequest,
 } from '@/types/requests';
-import { Country, City } from '@/types/models';
+
+export const rtkQueryErrorLogger: Middleware = () => (next) => (action: any) => {
+  if (isRejectedWithValue(action) && 'status' in action.payload && 'data' in action.payload) {
+    let description = '';
+
+    if (action.payload.data) {
+      description = action.payload.data.message;
+    } else {
+      description =
+        'data' in action.error ? (action.error.data as ApiResponse).message : action.error.message;
+    }
+
+    toast({ title: 'Error', variant: 'destructive', description });
+  }
+
+  return next(action);
+};
 
 export const api = createApi({
   reducerPath: 'api',
   baseQuery: fetchBaseQuery({
     baseUrl: 'http://localhost:8080',
     prepareHeaders: (headers) => {
-      const accessToken = localStorage.getItem('token');
+      const accessToken = localStorage.getItem('accessToken');
+
       if (accessToken) {
-        headers.set('authorization', `Bearer ${accessToken}`);
-        headers.set('Content-Type', 'application/json');
+        headers.set('Authorization', `Bearer ${accessToken}`);
       }
+
+      headers.set('Content-Type', 'application/json');
 
       return headers;
     },
@@ -61,6 +85,29 @@ export const api = createApi({
       query: (country) => `/shared/cities/${country}`,
       transformResponse: (response: ApiResponse<City[]>) => response.data,
     }),
+    getProfile: builder.mutation<User, void>({
+      query: () => '/profile',
+    }),
+    updateProfile: builder.mutation<ApiResponse<void>, UpdateProfileRequest>({
+      query: (data) => ({
+        url: '/profile',
+        method: 'PATCH',
+        body: data,
+      }),
+    }),
+    updatePassword: builder.mutation<ApiResponse<void>, UpdatePasswordRequest>({
+      query: (data) => ({
+        url: '/profile/password',
+        method: 'PATCH',
+        body: data,
+      }),
+    }),
+    updateRole: builder.mutation<ApiResponse<void>, UserRole>({
+      query: (data) => ({
+        url: `/profile/role/${data}`,
+        method: 'PATCH',
+      }),
+    }),
   }),
 });
 
@@ -72,4 +119,7 @@ export const {
   useGetCountriesQuery,
   useGetCitiesByCountryQuery,
   useLazyGetCitiesByCountryQuery,
+  useUpdateProfileMutation,
+  useUpdatePasswordMutation,
+  useUpdateRoleMutation,
 } = api;

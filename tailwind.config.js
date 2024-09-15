@@ -18,6 +18,9 @@ module.exports = {
     },
     extend: {
       colors: {
+        'scrollbar-track': '#e0e0e0', // Color of the scrollbar track
+        'scrollbar-thumb': '#888888', // Color of the scrollbar thumb
+        'scrollbar-thumb-hover': '#555555', // Color of the scrollbar thumb on hover
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
