@@ -36,7 +36,7 @@ import {
 
 export const UpdateProfileForm: React.FC = () => {
   const [getCitiesByCountry, { data: cities = [] }] = useLazyGetCitiesByCountryQuery();
-  const [updateProfile, { isError, isSuccess, error }] = useUpdateProfileMutation();
+  const [updateProfile, { isError, isSuccess, error, data: response }] = useUpdateProfileMutation();
   const { data: countries = [] } = useGetCountriesQuery();
 
   const userLogged = useAppSelector(selectUserLogged);
@@ -124,7 +124,7 @@ export const UpdateProfileForm: React.FC = () => {
         <Alert variant="success">
           <HiOutlineExclamationTriangle className="h-4 w-4" />
           <AlertTitle>Success</AlertTitle>
-          <AlertDescription>Your profile has been updated successfully.</AlertDescription>
+          <AlertDescription>{response.message}</AlertDescription>
         </Alert>
       )}
 

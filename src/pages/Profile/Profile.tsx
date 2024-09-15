@@ -3,6 +3,7 @@ import React from 'react';
 import { UpdatePasswordForm } from '@/components/forms/update-password';
 import { UpdateProfileForm } from '@/components/forms/update-profile';
 import { DeleteAccountForm } from '@/components/forms/delete-account';
+import { UpdateRole } from '@/components/forms/update-role';
 import { Separator } from '@/components/ui/separator';
 
 export const ProfilePage: React.FC = () => (
@@ -18,5 +19,7 @@ export const ProfilePage: React.FC = () => (
     <UpdatePasswordForm />
     <Separator className="my-6" />
     <DeleteAccountForm />
+    <Separator className="my-6" />
+    <UpdateRole />
   </div>
 );

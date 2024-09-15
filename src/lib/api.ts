@@ -112,8 +112,9 @@ export const api = createApi({
     }),
     updateRole: builder.mutation<ApiResponse, UserRole>({
       query: (data) => ({
-        url: `/profile/role/${data}`,
+        url: `/profile/role`,
         method: 'PATCH',
+        body: { role: data },
       }),
     }),
   }),
