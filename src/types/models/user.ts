@@ -1,5 +1,6 @@
 import { UserRole, UserStatus } from '../enums';
 import { Reservation } from './reservation';
+import { Attachment } from './attachment';
 import { Service } from './service';
 
 export class User {
@@ -37,6 +38,8 @@ export class User {
 
   businessReservations: Reservation[];
 
+  avatar?: Attachment;
+
   constructor(
     id: number,
     firstName: string,
@@ -55,6 +58,7 @@ export class User {
     services: Service[],
     customerReservations: Reservation[],
     businessReservations: Reservation[],
+    avatar?: Attachment,
   ) {
     this.id = id;
     this.firstName = firstName;
@@ -73,5 +77,6 @@ export class User {
     this.services = services;
     this.customerReservations = customerReservations;
     this.businessReservations = businessReservations;
+    this.avatar = avatar;
   }
 }

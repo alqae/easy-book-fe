@@ -11,7 +11,7 @@ import { VerifyEmailModal } from '@/components/modals/VerifyEmailModal';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { buttonVariants } from '@/components/ui/button';
 import { UserStatus } from '@/types/enums';
-import { cn } from '@/lib/utils';
+import { cn, getURLByAttachment } from '@/lib/utils';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -73,7 +73,7 @@ export const AuthenticatedRoute: React.FC = () => {
               <DropdownMenu>
                 <DropdownMenuTrigger>
                   <Avatar className="inline-block">
-                    <AvatarImage src="https://github.com/shadcn.png" alt="@shadcn" />
+                    <AvatarImage src={getURLByAttachment(userLogged?.avatar)} alt="@shadcn" />
                     <AvatarFallback>CN</AvatarFallback>
                   </Avatar>
                 </DropdownMenuTrigger>
