@@ -1,8 +1,6 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-import { isRejectedWithValue, Middleware } from '@reduxjs/toolkit';
 
 import { Country, City, User } from '@/types/models';
-import { toast } from '@/components/ui/use-toast';
 import { UserRole } from '@/types/enums';
 import {
   ApiResponse,
@@ -13,24 +11,8 @@ import {
   ResetPasswordRequest,
   UpdatePasswordRequest,
   UpdateProfileRequest,
+  RefreshTokenResponse,
 } from '@/types/requests';
-
-export const rtkQueryErrorLogger: Middleware = () => (next) => (action: any) => {
-  if (isRejectedWithValue(action) && 'status' in action.payload && 'data' in action.payload) {
-    let description = '';
-
-    if (action.payload.data) {
-      description = action.payload.data.message;
-    } else {
-      description =
-        'data' in action.error ? (action.error.data as ApiResponse).message : action.error.message;
-    }
-
-    toast({ title: 'Error', variant: 'destructive', description });
-  }
-
-  return next(action);
-};
 
 export const api = createApi({
   reducerPath: 'api',
@@ -38,9 +20,11 @@ export const api = createApi({
     baseUrl: 'http://localhost:8080',
     prepareHeaders: (headers) => {
       const accessToken = localStorage.getItem('accessToken');
+      const refreshToken = localStorage.getItem('refreshToken');
 
       if (accessToken) {
         headers.set('Authorization', `Bearer ${accessToken}`);
+        headers.set('Refresh-Token', refreshToken ?? '');
       }
 
       headers.set('Content-Type', 'application/json');
@@ -63,18 +47,36 @@ export const api = createApi({
         body: data,
       }),
     }),
-    forgotPassword: builder.mutation<ApiResponse<void>, ForgotPasswordRequest>({
+    forgotPassword: builder.mutation<ApiResponse, ForgotPasswordRequest>({
       query: (data) => ({
         url: '/auth/forgot-password',
         method: 'POST',
         body: data,
       }),
     }),
-    resetPassword: builder.mutation<ApiResponse<void>, ResetPasswordRequest>({
+    resetPassword: builder.mutation<ApiResponse, ResetPasswordRequest>({
       query: (data) => ({
         url: '/auth/reset-password',
         method: 'POST',
         body: data,
+      }),
+    }),
+    logout: builder.mutation<ApiResponse, void>({
+      query: () => ({
+        url: '/auth/logout',
+        method: 'POST',
+      }),
+    }),
+    resendVerificationEmail: builder.mutation<ApiResponse, void>({
+      query: () => ({
+        url: '/auth/resend-verification-email',
+        method: 'POST',
+      }),
+    }),
+    refreshToken: builder.mutation<ApiResponse<RefreshTokenResponse>, void>({
+      query: () => ({
+        url: '/auth/refresh-token',
+        method: 'POST',
       }),
     }),
     getCountries: builder.query<Country[], void>({
@@ -88,21 +90,21 @@ export const api = createApi({
     getProfile: builder.mutation<User, void>({
       query: () => '/profile',
     }),
-    updateProfile: builder.mutation<ApiResponse<void>, UpdateProfileRequest>({
+    updateProfile: builder.mutation<ApiResponse, UpdateProfileRequest>({
       query: (data) => ({
         url: '/profile',
         method: 'PATCH',
         body: data,
       }),
     }),
-    updatePassword: builder.mutation<ApiResponse<void>, UpdatePasswordRequest>({
+    updatePassword: builder.mutation<ApiResponse, UpdatePasswordRequest>({
       query: (data) => ({
         url: '/profile/password',
         method: 'PATCH',
         body: data,
       }),
     }),
-    updateRole: builder.mutation<ApiResponse<void>, UserRole>({
+    updateRole: builder.mutation<ApiResponse, UserRole>({
       query: (data) => ({
         url: `/profile/role/${data}`,
         method: 'PATCH',
@@ -122,4 +124,7 @@ export const {
   useUpdateProfileMutation,
   useUpdatePasswordMutation,
   useUpdateRoleMutation,
+  useLogoutMutation,
+  useResendVerificationEmailMutation,
+  useRefreshTokenMutation,
 } = api;

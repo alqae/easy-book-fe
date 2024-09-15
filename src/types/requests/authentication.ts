@@ -15,6 +15,8 @@ export interface RegisterRequest {
   password: string;
   token?: string;
   role: UserRole;
+  description?: string;
+  address?: string;
 }
 
 export interface ForgotPasswordRequest {
