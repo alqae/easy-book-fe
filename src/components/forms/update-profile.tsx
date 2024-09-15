@@ -1,17 +1,18 @@
-import React, { useEffect } from 'react';
 import * as Yup from 'yup';
+import React, { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
+import { FetchBaseQueryError } from '@reduxjs/toolkit/query';
 import { HiOutlineExclamationTriangle } from 'react-icons/hi2';
 
-import {
-  useGetCountriesQuery,
-  useLazyGetCitiesByCountryQuery,
-  useUpdateProfileMutation,
-} from '@/lib/api';
+import { fetchProfile, selectUserLogged } from '@/store/slices/profile.slice';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
+import { ApiResponse } from '@/types/requests';
 import { Input } from '@/components/ui/input';
+import { UserRole } from '@/types/enums';
 import {
   Form,
   FormControl,
@@ -27,14 +28,15 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { useAppDispatch, useAppSelector } from '@/store/hooks';
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { fetchProfile, selectUserLogged } from '@/store/slices/profile.slice';
-import { UserRole } from '@/types/enums';
+import {
+  useGetCountriesQuery,
+  useLazyGetCitiesByCountryQuery,
+  useUpdateProfileMutation,
+} from '@/lib/api';
 
 export const UpdateProfileForm: React.FC = () => {
   const [getCitiesByCountry, { data: cities = [] }] = useLazyGetCitiesByCountryQuery();
-  const [updateProfile, { isError, isSuccess }] = useUpdateProfileMutation();
+  const [updateProfile, { isError, isSuccess, error }] = useUpdateProfileMutation();
   const { data: countries = [] } = useGetCountriesQuery();
 
   const userLogged = useAppSelector(selectUserLogged);
@@ -106,14 +108,14 @@ export const UpdateProfileForm: React.FC = () => {
 
   return (
     <Form {...form}>
-      <h3>Update Profile</h3>
+      <h3 className="text-lg font-bold tracking-tight">Update Profile</h3>
 
       {isError && (
         <Alert variant="destructive">
           <HiOutlineExclamationTriangle className="h-4 w-4" />
           <AlertTitle>Error</AlertTitle>
           <AlertDescription>
-            Something went wrong while trying to update your profile.
+            {((error as FetchBaseQueryError).data as ApiResponse).message}
           </AlertDescription>
         </Alert>
       )}

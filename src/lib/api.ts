@@ -104,6 +104,12 @@ export const api = createApi({
         body: data,
       }),
     }),
+    deleteAccount: builder.mutation<ApiResponse, void>({
+      query: () => ({
+        url: '/profile',
+        method: 'DELETE',
+      }),
+    }),
     updateRole: builder.mutation<ApiResponse, UserRole>({
       query: (data) => ({
         url: `/profile/role/${data}`,
@@ -127,4 +133,5 @@ export const {
   useLogoutMutation,
   useResendVerificationEmailMutation,
   useRefreshTokenMutation,
+  useDeleteAccountMutation,
 } = api;
