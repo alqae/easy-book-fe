@@ -1,7 +1,7 @@
 import React from 'react';
-import { IoLocationSharp } from 'react-icons/io5';
-import { GoDotFill } from 'react-icons/go';
 import { FaHeart } from 'react-icons/fa6';
+import { GoDotFill } from 'react-icons/go';
+import { IoLocationSharp } from 'react-icons/io5';
 
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { ellipsis } from '@/lib/utils';
@@ -65,10 +65,10 @@ export const BusinessCard: React.FC<BusinessCardProps> = ({
             <span className="font-medium text-md">Services</span>
             <div className="flex items-center flex-wrap gap-2 text-sm">
               {servicesToDisplay.map((service, index) => (
-                <>
+                <React.Fragment key={service}>
                   <span>{ellipsis(service, 35)}</span>
                   {index !== servicesToDisplay.length - 1 && <GoDotFill />}
-                </>
+                </React.Fragment>
               ))}
             </div>
 
