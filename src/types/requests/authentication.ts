@@ -32,3 +32,8 @@ export interface ResetPasswordRequest {
 export interface AuthenticationSuccessResponse {
   token: string;
 }
+
+export interface RefreshTokenResponse {
+  accessToken: string;
+  refreshToken: string;
+}

@@ -5,6 +5,5 @@ export * from './NotFound';
 export * from './Profile';
 export * from './Register';
 export * from './Search';
-export * from './VerifyEmail';
 export * from './Unauthorized';
 export * from './ForgotPassword';

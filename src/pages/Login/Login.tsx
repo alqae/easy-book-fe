@@ -3,7 +3,8 @@ import * as Yup from 'yup';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 
-import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button, buttonVariants } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import {
   Form,
@@ -36,48 +37,67 @@ export const LoginPage: React.FC = () => {
   const onSubmit = (data: Yup.InferType<typeof formSchema>) => dispatch(logIn(data));
 
   return (
-    <>
-      <div className="flex flex-col space-y-2 text-center">
-        <h1 className="text-2xl font-semibold tracking-tight">Welcome back</h1>
-        <p className="text-sm text-muted-foreground">Enter your email and password below</p>
-      </div>
+    <Card className="max-w-sm">
+      <CardHeader>
+        <CardTitle className="text-xl">Welcome back</CardTitle>
+        <CardDescription>Enter your credentials to access your account</CardDescription>
+      </CardHeader>
 
-      <Form {...form}>
-        <form className="grid gap-6" onSubmit={form.handleSubmit(onSubmit)}>
-          <FormField
-            control={form.control}
-            name="email"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Email</FormLabel>
-                <FormControl>
-                  <Input type="email" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+      <CardContent>
+        <Form {...form}>
+          <form className="grid gap-4" onSubmit={form.handleSubmit(onSubmit)}>
+            <FormField
+              control={form.control}
+              name="email"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Email</FormLabel>
+                  <FormControl>
+                    <Input type="email" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
-          <FormField
-            control={form.control}
-            name="password"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Password</FormLabel>
-                <FormControl>
-                  <Input type="password" {...field} />
-                </FormControl>
-                <FormDescription>
-                  Use at least one letter, one numeral, and seven characters.
-                </FormDescription>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+            <FormField
+              control={form.control}
+              name="password"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Password</FormLabel>
+                  <FormControl>
+                    <Input type="password" {...field} />
+                  </FormControl>
+                  <FormDescription>
+                    Use at least one letter, one numeral, and seven characters.
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
-          <Button type="submit">Login</Button>
-        </form>
-      </Form>
-    </>
+            <Button type="submit">Login</Button>
+          </form>
+        </Form>
+
+        <div className="mt-4 text-center text-sm">
+          Don&apos;t have an account?&nbsp;
+          <a href="/register" rel="noreferrer" className={buttonVariants({ variant: 'link' })}>
+            Sign up
+          </a>
+        </div>
+
+        <div className="mt-4 text-center text-sm">
+          <a
+            href="/forgot-password"
+            rel="noreferrer"
+            className={buttonVariants({ variant: 'link' })}
+          >
+            Forgot your password?
+          </a>
+        </div>
+      </CardContent>
+    </Card>
   );
 };
