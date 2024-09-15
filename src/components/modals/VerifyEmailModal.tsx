@@ -19,15 +19,16 @@ import {
 } from '@/components/ui/dialog';
 
 export const VerifyEmailModal: React.FC = () => {
-  const [showVerifyModal, setShowVerifyModal] = React.useState(true);
+  const [showVerifyModal, setShowVerifyModal] = React.useState(false);
 
-  const [resendVerifyEmail, { isLoading, isError, error }] = useResendVerificationEmailMutation();
+  const [resendVerifyEmail, { isLoading, isError, error, isSuccess, data }] =
+    useResendVerificationEmailMutation();
 
   const userLogged = useAppSelector(selectUserLogged);
 
   React.useEffect(() => {
     if (userLogged && userLogged.status === UserStatus.UNVERIFIED) {
-      setShowVerifyModal(false);
+      setShowVerifyModal(true);
     }
   }, [userLogged]);
 
@@ -40,6 +41,14 @@ export const VerifyEmailModal: React.FC = () => {
             Your account is not verified. Please verify your account.
           </DialogDescription>
         </DialogHeader>
+
+        {isSuccess && (
+          <Alert variant="success">
+            <ExclamationTriangleIcon className="h-4 w-4" />
+            <AlertTitle>Great, just one more step</AlertTitle>
+            <AlertDescription>{data.message}</AlertDescription>
+          </Alert>
+        )}
 
         {isError && (
           <Alert variant="destructive">
