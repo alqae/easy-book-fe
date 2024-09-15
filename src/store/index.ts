@@ -21,6 +21,7 @@ import { api } from '@/lib/api';
 const persistConfig = {
   key: 'root',
   storage,
+  blacklist: ['profile'],
 };
 
 const rootReducer = combineReducers({

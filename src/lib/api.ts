@@ -87,7 +87,7 @@ export const api = createApi({
       query: (country) => `/shared/cities/${country}`,
       transformResponse: (response: ApiResponse<City[]>) => response.data,
     }),
-    getProfile: builder.mutation<User, void>({
+    getProfile: builder.mutation<ApiResponse<User>, void>({
       query: () => '/profile',
     }),
     updateProfile: builder.mutation<ApiResponse, UpdateProfileRequest>({
