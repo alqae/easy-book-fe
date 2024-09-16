@@ -49,7 +49,7 @@ export const CustomerDetailPage: React.FC = () => {
     <div className="space-y-6">
       <div className="border-b py-10">
         <div className="container flex flex-row flex-nowrap gap-8 items-center">
-          <Avatar className="max-w-[7.5rem] w-full h-full shadow-lg">
+          <Avatar className="w-32 h-32 shadow-lg">
             <AvatarImage src={getURLByAttachment(avatar)} alt={`${firstName} ${lastName}`} />
             <AvatarFallback>{getInitials(firstName, lastName)}</AvatarFallback>
           </Avatar>

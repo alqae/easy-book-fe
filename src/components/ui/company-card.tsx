@@ -36,8 +36,8 @@ export const CompanyCard: React.FC<User> = ({
   }, [services, showAll]);
 
   return (
-    <div className="flex flex-nowrap row gap-4 rounded-lg border p-4 text-sm transition-all hover:bg-accent bg-muted w-full">
-      <Avatar className="max-w-[7.5rem] w-full h-full">
+    <div className="flex flex-nowrap row gap-4 rounded-lg border p-4 text-sm transition-all hover:bg-accent bg-muted w-full shadow">
+      <Avatar className="w-32 h-32 border shadow-lg">
         <AvatarImage src={imageUrl} alt={fullName} />
         <AvatarFallback>{getInitials(firstName, lastName)}</AvatarFallback>
       </Avatar>
