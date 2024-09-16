@@ -65,7 +65,10 @@ export const SearchPage: React.FC = () => {
               type="search"
               placeholder="Search for..."
               value={textSearch}
-              onChange={(e) => setSearchParams({ text: e.target.value })}
+              onChange={(e) => {
+                setSearchParams({ text: e.target.value });
+                setCurrentPage(0);
+              }}
             />
           </div>
 
@@ -73,7 +76,10 @@ export const SearchPage: React.FC = () => {
             <Select
               value={selectedCountry}
               disabled={isLoadingCountries || isError}
-              onValueChange={(value) => setSearchParams({ country: value })}
+              onValueChange={(country) => {
+                setSearchParams({ country });
+                setCurrentPage(0);
+              }}
             >
               <SelectTrigger className="w-full h-full">
                 <SelectValue placeholder="Select an country" />
