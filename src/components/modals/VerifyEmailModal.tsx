@@ -46,7 +46,7 @@ export const VerifyEmailModal: React.FC = () => {
           <Alert variant="success">
             <ExclamationTriangleIcon className="h-4 w-4" />
             <AlertTitle>Great, just one more step</AlertTitle>
-            <AlertDescription>{data.message}</AlertDescription>
+            <AlertDescription>{data?.message}</AlertDescription>
           </Alert>
         )}
 

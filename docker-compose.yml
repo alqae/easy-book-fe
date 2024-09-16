@@ -1,0 +1,18 @@
+
+services:
+  app:
+    container_name: easy_book_app
+    restart: unless-stopped
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "4173:4173"
+    environment:
+      - NODE_ENV=production
+    networks:
+      - easy_book_network
+
+networks:
+  easy_book_network:
+    driver: bridge

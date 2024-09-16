@@ -43,7 +43,7 @@ export const UpdateRole: React.FC = () => {
         <Alert variant="success">
           <HiOutlineExclamationTriangle className="h-4 w-4" />
           <AlertTitle>Success</AlertTitle>
-          <AlertDescription>{data.message}</AlertDescription>
+          <AlertDescription>{data?.message}</AlertDescription>
         </Alert>
       )}
 

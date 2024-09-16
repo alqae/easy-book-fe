@@ -125,7 +125,7 @@ export const UpdateProfileForm: React.FC = () => {
         <Alert variant="success">
           <HiOutlineExclamationTriangle className="h-4 w-4" />
           <AlertTitle>Success</AlertTitle>
-          <AlertDescription>{response.message}</AlertDescription>
+          <AlertDescription>{response?.message}</AlertDescription>
         </Alert>
       )}
 
