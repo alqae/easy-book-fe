@@ -146,6 +146,11 @@ export const api = createApi({
         params,
       }),
     }),
+    getCompanyDetail: builder.query<ApiResponse<User>, User['id']>({
+      query: (id) => ({
+        url: `/companies/${id}`,
+      }),
+    }),
   }),
 });
 
@@ -168,4 +173,5 @@ export const {
   useUpdateServiceMutation,
   useDeleteServiceMutation,
   useSearchCompaniesQuery,
+  useGetCompanyDetailQuery,
 } = api;

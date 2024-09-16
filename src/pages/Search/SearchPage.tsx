@@ -5,8 +5,7 @@ import ReactPaginate from 'react-paginate';
 import { yupResolver } from '@hookform/resolvers/yup';
 
 import { useGetCountriesQuery, useSearchCompaniesQuery } from '@/lib/api';
-import { BusinessCard } from '@/components/ui/business-card';
-import { getURLByAttachment } from '@/lib/utils';
+import { CompanyCard } from '@/components/ui/company-card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Form } from '@/components/ui/form';
@@ -21,10 +20,7 @@ import {
 } from '@/components/ui/select';
 import {
   Pagination,
-  // PaginationContent,
   PaginationEllipsis,
-  // PaginationItem,
-  // PaginationLink,
   PaginationNext,
   PaginationPrevious,
 } from '@/components/ui/pagination';
@@ -136,20 +132,13 @@ export const SearchPage: React.FC = () => {
           {!companies.length && <span>No results found</span>}
 
           {companies.map((company) => (
-            <BusinessCard
-              key={company.id}
-              fullName={`${company.firstName} ${company.lastName}`}
-              address={company.address}
-              favs={999}
-              services={company.services}
-              imageUrl={getURLByAttachment(company.avatar)}
-            />
+            <CompanyCard key={company.id} {...company} />
           ))}
 
           <Pagination>
             <ReactPaginate
-              previousLabel={<PaginationPrevious href="#" />}
-              nextLabel={<PaginationNext href="#" />}
+              previousLabel={<PaginationPrevious />}
+              nextLabel={<PaginationNext />}
               breakLabel={<PaginationEllipsis />}
               pageCount={pageCount}
               onPageChange={onPageChange}

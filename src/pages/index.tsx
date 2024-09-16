@@ -1,4 +1,4 @@
-export * from './BusinessDetail';
+export * from './CompanyDetail';
 export * from './Home';
 export * from './Login';
 export * from './NotFound';

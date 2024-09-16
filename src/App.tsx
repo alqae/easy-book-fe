@@ -12,7 +12,7 @@ import {
   LoginPage,
   RegisterPage,
   ForgotPasswordPage,
-  BusinessDetailPage,
+  CompanyDetailPage,
   UnauthorizedPage,
   NotFoundPage,
 } from '@/pages';
@@ -32,7 +32,7 @@ const Router: React.FC = () => (
     <Route element={<AuthenticatedRoute />}>
       <Route path="/profile" element={<ProfilePage />} />
       <Route path="/" element={<HomePage />} />
-      <Route path="/business/:id" element={<BusinessDetailPage />} />
+      <Route path="/company/:id" element={<CompanyDetailPage />} />
       <Route path="/search" element={<SearchPage />} />
     </Route>
 

@@ -1,29 +1,29 @@
 import React from 'react';
 import { FaHeart } from 'react-icons/fa6';
 import { GoDotFill } from 'react-icons/go';
+import { useNavigate } from 'react-router';
 import { IoLocationSharp } from 'react-icons/io5';
 
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Service } from '@/types/models';
-import { ellipsis } from '@/lib/utils';
-import { Button } from './button';
+import { ellipsis, getURLByAttachment } from '@/lib/utils';
+import { Button } from '@/components/ui/button';
+import { Service, User } from '@/types/models';
 
-interface BusinessCardProps {
-  fullName: string;
-  address: string;
-  favs: number;
-  imageUrl: string;
-  services: Service[];
-}
-
-export const BusinessCard: React.FC<BusinessCardProps> = ({
-  fullName,
+export const CompanyCard: React.FC<User> = ({
+  id,
+  firstName,
+  lastName,
   services,
   address,
-  favs,
-  imageUrl,
+  avatar,
 }) => {
   const [showAll, setShowAll] = React.useState(false);
+
+  const navigate = useNavigate();
+
+  const imageUrl = getURLByAttachment(avatar);
+  const fullName = `${firstName} ${lastName}`;
+  const favs = 0;
 
   const CATEGORIES_TO_DISPLAY_LIMIT = 5;
 
@@ -79,7 +79,7 @@ export const BusinessCard: React.FC<BusinessCardProps> = ({
           </div>
 
           <div className="self-end">
-            <Button>Book now</Button>
+            <Button onClick={() => navigate(`/company/${id}`)}>Book now</Button>
           </div>
         </div>
       </div>
