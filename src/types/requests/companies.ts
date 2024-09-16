@@ -1,17 +1,7 @@
-import { User } from '../models';
+import { PaginatedRequest } from './general';
 
-export interface SearchCompaniesRequest {
-  // filters
+export interface SearchCompaniesRequest extends PaginatedRequest {
   text?: string;
   city?: string;
   country?: string;
-
-  // pagination
-  limit: number;
-  offset: number;
-}
-
-export interface SearchCompaniesResponse {
-  items: User[];
-  count: number;
 }

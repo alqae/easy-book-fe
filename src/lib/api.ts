@@ -17,7 +17,8 @@ import {
   SearchCompaniesRequest,
   GetAviableHoursRequest,
   CreateReservationRequest,
-  SearchCompaniesResponse,
+  PaginatedResponse,
+  PaginatedRequest,
 } from '@/types/requests';
 
 export const api = createApi({
@@ -144,7 +145,7 @@ export const api = createApi({
       }),
     }),
     searchCompanies: builder.query<
-      ApiResponse<SearchCompaniesResponse>,
+      ApiResponse<PaginatedResponse<User>>,
       Partial<SearchCompaniesRequest>
     >({
       query: (params) => ({
@@ -170,8 +171,11 @@ export const api = createApi({
         body: data,
       }),
     }),
-    getReservations: builder.query<ApiResponse<Reservation[]>, void>({
-      query: () => '/reservations',
+    getReservations: builder.query<ApiResponse<PaginatedResponse<Reservation>>, PaginatedRequest>({
+      query: (params) => ({
+        url: '/reservations',
+        params,
+      }),
     }),
   }),
 });

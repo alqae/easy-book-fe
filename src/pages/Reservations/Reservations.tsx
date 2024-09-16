@@ -1,4 +1,5 @@
 import { DotsHorizontalIcon } from '@radix-ui/react-icons';
+import ReactPaginate from 'react-paginate';
 import React from 'react';
 
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -25,21 +26,39 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import {
+  Pagination,
+  PaginationEllipsis,
+  PaginationNext,
+  PaginationPrevious,
+} from '@/components/ui/pagination';
 
-export interface ReservationsPageProps {
-  //
-}
-
-export const ReservationsPage: React.FC<ReservationsPageProps> = () => {
+export const ReservationsPage: React.FC = () => {
   const userLogged = useAppSelector(selectUserLogged);
   const isBusiness = userLogged?.role === UserRole.BUSINESS;
   const isCustomer = userLogged?.role === UserRole.CUSTOMER;
 
-  const { data: response, isLoading } = useGetReservationsQuery(undefined, {
-    refetchOnMountOrArgChange: true,
-  });
+  const [currentPage, setCurrentPage] = React.useState(0);
+  const itemsPerPage = 10;
 
-  const reservations = response?.data || [];
+  const onPageChange = ({ selected }: { selected: number }) => setCurrentPage(selected);
+
+  const { data: results, isLoading } = useGetReservationsQuery(
+    {
+      limit: itemsPerPage,
+      offset: currentPage * itemsPerPage,
+    },
+    {
+      refetchOnMountOrArgChange: true,
+    },
+  );
+
+  const { items: reservations = [], count } = results?.data ?? {
+    count: 0,
+    items: [],
+  };
+
+  const pageCount = React.useMemo(() => Math.ceil(count / itemsPerPage), [count, itemsPerPage]);
 
   return (
     <div className="container py-6 space-y-6">
@@ -125,6 +144,25 @@ export const ReservationsPage: React.FC<ReservationsPageProps> = () => {
           ))}
         </TableBody>
       </Table>
+      {pageCount > 1 && (
+        <Pagination>
+          <ReactPaginate
+            previousLabel={<PaginationPrevious />}
+            nextLabel={<PaginationNext />}
+            breakLabel={<PaginationEllipsis />}
+            pageCount={pageCount}
+            onPageChange={onPageChange}
+            forcePage={currentPage}
+            pageRangeDisplayed={itemsPerPage}
+            marginPagesDisplayed={1}
+            renderOnZeroPageCount={null}
+            containerClassName="pagination flex items-center justify-center gap-1"
+            pageLinkClassName="pagination-link"
+            activeLinkClassName="active underline underline-offset-4"
+            breakLinkClassName="pagination-ellipsis"
+          />
+        </Pagination>
+      )}
     </div>
   );
 };
