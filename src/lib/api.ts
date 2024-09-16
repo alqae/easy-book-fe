@@ -15,6 +15,8 @@ import {
   CreateServiceRequest,
   UpdateServiceRequest,
   SearchCompaniesRequest,
+  GetAviableHoursRequest,
+  CreateReservationRequest,
 } from '@/types/requests';
 
 export const api = createApi({
@@ -151,6 +153,19 @@ export const api = createApi({
         url: `/companies/${id}`,
       }),
     }),
+    getAviableHoursByDate: builder.query<ApiResponse<string[]>, GetAviableHoursRequest>({
+      query: (params) => ({
+        url: '/services/aviable-hours',
+        params,
+      }),
+    }),
+    createReservation: builder.mutation<ApiResponse, CreateReservationRequest>({
+      query: (data) => ({
+        url: '/reservations',
+        method: 'POST',
+        body: data,
+      }),
+    }),
   }),
 });
 
@@ -174,4 +189,6 @@ export const {
   useDeleteServiceMutation,
   useSearchCompaniesQuery,
   useGetCompanyDetailQuery,
+  useLazyGetAviableHoursByDateQuery,
+  useCreateReservationMutation,
 } = api;

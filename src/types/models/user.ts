@@ -1,5 +1,5 @@
 import { UserRole, UserStatus } from '../enums';
-import { Reservation } from './reservation';
+import type { Reservation } from './reservation';
 import { Attachment } from './attachment';
 import { Service } from './service';
 
