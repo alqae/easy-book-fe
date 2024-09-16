@@ -1,14 +1,11 @@
 import React from 'react';
-import * as Yup from 'yup';
-import { useForm } from 'react-hook-form';
 import ReactPaginate from 'react-paginate';
-import { yupResolver } from '@hookform/resolvers/yup';
+import { useSearchParams } from 'react-router-dom';
 
 import { useGetCountriesQuery, useSearchCompaniesQuery } from '@/lib/api';
 import { CompanyCard } from '@/components/ui/company-card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Form } from '@/components/ui/form';
 import {
   Select,
   SelectContent,
@@ -25,28 +22,14 @@ import {
   PaginationPrevious,
 } from '@/components/ui/pagination';
 
-const formSchema = Yup.object().shape({
-  country: Yup.string().optional(),
-  city: Yup.string().required(),
-  text: Yup.string().required(),
-});
-
 export const SearchPage: React.FC = () => {
   const { data: countries, isLoading: isLoadingCountries, isError } = useGetCountriesQuery();
 
-  const form = useForm({
-    defaultValues: {
-      country: '',
-      city: '',
-      text: '',
-    },
-    resolver: yupResolver(formSchema),
-  });
+  const [searchParams, setSearchParams] = useSearchParams();
 
   // Search
-  const textSearch = form.watch('text');
-  const selectedCity = form.watch('city');
-  const selectedCountry = form.watch('country');
+  const textSearch = searchParams.get('text') ?? undefined;
+  const selectedCountry = searchParams.get('country') ?? undefined;
 
   // Pagination
   const [currentPage, setCurrentPage] = React.useState(0);
@@ -56,11 +39,8 @@ export const SearchPage: React.FC = () => {
 
   const { data: results, isLoading: isLoadingResults } = useSearchCompaniesQuery(
     {
-      // 'text', 'country' and 'city' are used for filtering
-      city: selectedCity,
       country: selectedCountry,
       text: textSearch,
-      // 'limit' and 'offset' are used for pagination
       limit: itemsPerPage,
       offset: currentPage * itemsPerPage,
     },
@@ -77,18 +57,23 @@ export const SearchPage: React.FC = () => {
   );
 
   return (
-    <Form {...form}>
+    <>
       <div className="border-b py-5 mb-5">
         <div className="grid grid-cols-12 items-center gap-4 container">
           <div className="col-span-7">
-            <Input type="search" placeholder="Search for..." {...form.register('text')} />
+            <Input
+              type="search"
+              placeholder="Search for..."
+              value={textSearch}
+              onChange={(e) => setSearchParams({ text: e.target.value })}
+            />
           </div>
 
           <div className="col-span-4">
             <Select
+              value={selectedCountry}
               disabled={isLoadingCountries || isError}
-              onValueChange={(value) => form.setValue('country', value)}
-              value={form.watch('country')}
+              onValueChange={(value) => setSearchParams({ country: value })}
             >
               <SelectTrigger className="w-full h-full">
                 <SelectValue placeholder="Select an country" />
@@ -113,12 +98,12 @@ export const SearchPage: React.FC = () => {
       </div>
 
       <div className="container">
-        {Boolean(textSearch.length) && (
+        {Boolean(textSearch?.length) && (
           <span className="block mb-5">
             Results for &quot;<b>{textSearch}&quot;</b>
             {selectedCountry && (
               <>
-                &nbsp;in <b>{selectedCountry}</b>
+                &nbsp; in <b>{selectedCountry}</b>
               </>
             )}
           </span>
@@ -154,6 +139,6 @@ export const SearchPage: React.FC = () => {
           </Pagination>
         </div>
       </div>
-    </Form>
+    </>
   );
 };

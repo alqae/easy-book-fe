@@ -30,7 +30,9 @@ export const HomePage: React.FC = () => {
           Easy book
         </h1>
 
-        <SearchBox onSearch={(value) => navigate(`/search?${createSearchParams({ q: value })}`)} />
+        <SearchBox
+          onSearch={(value) => navigate(`/search?${createSearchParams({ text: value })}`)}
+        />
       </div>
 
       {/* TODO: add categories */}
