@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router';
 import { IoLocationSharp } from 'react-icons/io5';
 
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { ellipsis, getURLByAttachment } from '@/lib/utils';
+import { ellipsis, getInitials, getURLByAttachment } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { Service, User } from '@/types/models';
 
@@ -39,7 +39,7 @@ export const CompanyCard: React.FC<User> = ({
     <div className="flex flex-nowrap row gap-4 rounded-lg border p-4 text-sm transition-all hover:bg-accent bg-muted w-full">
       <Avatar className="max-w-[7.5rem] w-full h-full">
         <AvatarImage src={imageUrl} alt={fullName} />
-        <AvatarFallback>CN</AvatarFallback>
+        <AvatarFallback>{getInitials(firstName, lastName)}</AvatarFallback>
       </Avatar>
 
       <div className="flex flex-col items-start gap-2 text-left w-full">

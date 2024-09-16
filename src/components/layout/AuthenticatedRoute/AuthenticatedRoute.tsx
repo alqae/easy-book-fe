@@ -8,10 +8,11 @@ import { fetchProfile, selectUserLogged } from '@/store/slices/profile.slice';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { logOut, selectIsAuthenticated } from '@/store/slices/auth.slice';
 import { VerifyEmailModal } from '@/components/modals/VerifyEmailModal';
+import { cn, getInitials, getURLByAttachment } from '@/lib/utils';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { buttonVariants } from '@/components/ui/button';
 import { UserStatus } from '@/types/enums';
-import { cn, getURLByAttachment } from '@/lib/utils';
+import { User } from '@/types/models';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -74,7 +75,9 @@ export const AuthenticatedRoute: React.FC = () => {
                 <DropdownMenuTrigger>
                   <Avatar className="inline-block">
                     <AvatarImage src={getURLByAttachment(userLogged?.avatar)} alt="@shadcn" />
-                    <AvatarFallback>CN</AvatarFallback>
+                    <AvatarFallback>
+                      {getInitials((userLogged as User)?.firstName, (userLogged as User)?.lastName)}
+                    </AvatarFallback>
                   </Avatar>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent>

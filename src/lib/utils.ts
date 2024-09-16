@@ -47,3 +47,23 @@ export function getEndTime(startTime: Date, duration: string): Date {
   endTime.setUTCMinutes(endTime.getUTCMinutes() + durationInMinutes);
   return endTime;
 }
+
+export function formatDate(date: Date | string): string {
+  let parsedDate: Date;
+
+  if (typeof date === 'string') {
+    parsedDate = new Date(date);
+  } else {
+    parsedDate = date;
+  }
+
+  return `${parsedDate.toLocaleDateString()} ${parsedDate.toLocaleTimeString()}`;
+}
+
+export function getInitials(fistName: string, lastName: string): string {
+  if (!fistName || !lastName) {
+    return '';
+  }
+
+  return `${fistName.charAt(0)}${lastName.charAt(0)}`.toUpperCase();
+}

@@ -7,8 +7,8 @@ import { HiOutlineExclamationTriangle } from 'react-icons/hi2';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { getInitials, getURLByAttachment } from '@/lib/utils';
 import { useGetCompanyDetailQuery } from '@/lib/api';
-import { getURLByAttachment } from '@/lib/utils';
 import { ServicesTab } from './tabs/ServicesTab';
 import { Button } from '@/components/ui/button';
 import { ApiResponse } from '@/types/requests';
@@ -65,9 +65,7 @@ export const CompanyDetailPage: React.FC = () => {
         <div className="container flex flex-row flex-nowrap gap-8 items-center">
           <Avatar className="max-w-[7.5rem] w-full h-full shadow-lg">
             <AvatarImage src={getURLByAttachment(avatar)} alt={`${firstName} ${lastName}`} />
-            <AvatarFallback>
-              <span className="sr-only">{`${firstName} ${lastName}`}</span>
-            </AvatarFallback>
+            <AvatarFallback>{getInitials(firstName, lastName)}</AvatarFallback>
           </Avatar>
 
           <h1 className="text-4xl font-bold">{`${firstName} ${lastName}`}</h1>
