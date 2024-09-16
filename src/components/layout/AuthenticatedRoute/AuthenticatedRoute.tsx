@@ -11,7 +11,8 @@ import { VerifyEmailModal } from '@/components/modals/VerifyEmailModal';
 import { cn, getInitials, getURLByAttachment } from '@/lib/utils';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { buttonVariants } from '@/components/ui/button';
-import { UserStatus } from '@/types/enums';
+import { Separator } from '@/components/ui/separator';
+import { UserRole, UserStatus } from '@/types/enums';
 import { User } from '@/types/models';
 import {
   DropdownMenu,
@@ -61,7 +62,17 @@ export const AuthenticatedRoute: React.FC = () => {
       <div className="min-h-screen max-h-screen flex flex-col flex-nowrap">
         <header className="bg-white border-b p-4">
           <div className="container flex justify-between items-center">
-            <Link to="/">EasyBook</Link>
+            {userLogged?.role === UserRole.BUSINESS ? (
+              <Link to="/">EasyBook</Link>
+            ) : (
+              <div className="flex h-5 items-center space-x-4">
+                <Link to="/">EasyBook</Link>
+                <Separator orientation="vertical" />
+                <Link to="/reservations" className="underline underline-offset-4">
+                  My Reservations
+                </Link>
+              </div>
+            )}
 
             <div className="flex items-center gap-2">
               <Link

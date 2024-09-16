@@ -74,7 +74,6 @@ const SearchBox: React.FC<SearchBoxProps> = ({ onSearch, showButton, ...props })
             'focus:border-blue-500',
           )}
           placeholder="Search Mockups, Logos..."
-          required
           {...props}
         />
 
