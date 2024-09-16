@@ -1,12 +1,12 @@
 import React from 'react';
 import { ChevronLeftIcon } from '@radix-ui/react-icons';
 
-import { useCreateReservationMutation, useLazyGetAviableHoursByDateQuery } from '@/lib/api';
 import { getEndTime, getStartTime } from '@/lib/utils';
+import { Reservation, Service } from '@/types/models';
 import { Calendar } from '@/components/ui/calendar';
 import { toast } from '@/components/ui/use-toast';
 import { Button } from '@/components/ui/button';
-import { Service } from '@/types/models';
+import { ApiResponse } from '@/types/requests';
 import {
   Dialog,
   DialogContent,
@@ -15,12 +15,20 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
+import {
+  useCreateReservationMutation,
+  useLazyGetAviableHoursByDateQuery,
+  useUpdateReservationMutation,
+} from '@/lib/api';
+import { ReservationStatus } from '@/types/enums';
 
 export interface ChoseDateAndTimeModalProps {
-  services: Service[];
   show: boolean;
-  onBook: (service: Service) => void;
   onClose: () => void;
+  services: Service[];
+  onBook: (service: Service) => void;
+  // eslint-disable-next-line react/require-default-props
+  reservation?: Reservation;
 }
 
 export const ChoseDateAndTimeModal: React.FC<ChoseDateAndTimeModalProps> = ({
@@ -28,6 +36,7 @@ export const ChoseDateAndTimeModal: React.FC<ChoseDateAndTimeModalProps> = ({
   onClose,
   onBook: onBookHandler,
   services = [],
+  reservation,
 }) => {
   const [selectedService, setSelectedService] = React.useState<Service>();
   const [showCalendar, setShowCalendar] = React.useState(true);
@@ -36,7 +45,8 @@ export const ChoseDateAndTimeModal: React.FC<ChoseDateAndTimeModalProps> = ({
 
   const [getAviableHours, { isLoading: isLoadingAviableHours, data: responseAviableHours }] =
     useLazyGetAviableHoursByDateQuery();
-  const [createReservation, { isLoading: isLoadingReservation }] = useCreateReservationMutation();
+  const [createReservation, { isLoading: isLoadingCreating }] = useCreateReservationMutation();
+  const [updateReservation, { isLoading: isLoadingUpdating }] = useUpdateReservationMutation();
 
   const aviableHours = React.useMemo(() => {
     if (!responseAviableHours) {
@@ -76,26 +86,43 @@ export const ChoseDateAndTimeModal: React.FC<ChoseDateAndTimeModalProps> = ({
     const startTime = getStartTime(selectedHour, selectedDay);
     const endTime = getEndTime(startTime, selectedService.duration);
 
-    await createReservation({
-      serviceId: selectedService?.id,
-      startTime: startTime.toISOString(),
-      endTime: endTime.toISOString(),
-    }).then((response) => {
-      if ('error' in response) {
-        return;
-      }
+    let response: ApiResponse;
 
-      toast({ variant: 'success', title: response.data.message });
-      onBookHandler(selectedService);
-      onClose();
-    });
+    if (reservation) {
+      const result = await updateReservation([
+        reservation.id,
+        {
+          status: ReservationStatus.RESCHEDULED,
+          startTime: startTime.toISOString(),
+          endTime: endTime.toISOString(),
+        },
+      ]);
+
+      response = (result as ApiResponse).data;
+    } else {
+      const result = await createReservation({
+        serviceId: selectedService?.id,
+        startTime: startTime.toISOString(),
+        endTime: endTime.toISOString(),
+      });
+
+      response = (result as ApiResponse).data;
+    }
+
+    toast({ variant: 'success', title: response.message });
+    onBookHandler(selectedService);
+    onClose();
   };
 
   React.useEffect(() => {
     if (!selectedService) {
-      setSelectedService(services[0]);
+      if (reservation) {
+        setSelectedService(reservation.service);
+      } else {
+        setSelectedService(services[0]);
+      }
     }
-  }, [services, selectedService]);
+  }, [services, selectedService, reservation]);
 
   // Reset calendar if hide modal
   React.useEffect(() => {
@@ -107,10 +134,13 @@ export const ChoseDateAndTimeModal: React.FC<ChoseDateAndTimeModalProps> = ({
     }
   }, [show]);
 
-  const currentServiceIndex = React.useMemo(
-    () => services.findIndex((s) => s.id === selectedService?.id) + 1,
-    [services, selectedService],
-  );
+  const currentServiceIndex = React.useMemo(() => {
+    if (services.length === 1 || !selectedService) {
+      return 1;
+    }
+
+    return services.findIndex((s) => s.id === selectedService.id) + 1;
+  }, [services, selectedService]);
 
   return (
     <Dialog open={show} onOpenChange={(x) => !x && onClose()}>
@@ -158,10 +188,12 @@ export const ChoseDateAndTimeModal: React.FC<ChoseDateAndTimeModalProps> = ({
             selected={selectedDay}
             onSelect={(day) => {
               if (!day || !selectedService) return;
+
               setSelectedDay(day);
+
               getAviableHours({
                 date: day.toISOString(),
-                serviceId: selectedService.id,
+                serviceId: reservation ? reservation.service.id : selectedService.id,
               }).then(() => setShowCalendar(false));
             }}
             className="mx-auto"
@@ -198,17 +230,17 @@ export const ChoseDateAndTimeModal: React.FC<ChoseDateAndTimeModalProps> = ({
                   setSelectedDay(undefined);
                   setSelectedHour(undefined);
                 }}
-                disabled={isLoadingAviableHours || isLoadingReservation}
+                disabled={isLoadingAviableHours || isLoadingCreating || isLoadingUpdating}
                 variant="outline"
               >
                 Change Day
               </Button>
 
               <Button
-                disabled={!selectedDay || !selectedHour || isLoadingReservation}
+                disabled={!selectedDay || !selectedHour || isLoadingCreating || isLoadingUpdating}
                 onClick={onBook}
               >
-                Book
+                {reservation ? 'Reschedule' : 'Book'}
               </Button>
             </>
           )}

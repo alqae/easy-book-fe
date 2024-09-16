@@ -19,6 +19,7 @@ import {
   CreateReservationRequest,
   PaginatedResponse,
   PaginatedRequest,
+  UpdateReservationRequest,
 } from '@/types/requests';
 
 export const api = createApi({
@@ -177,6 +178,15 @@ export const api = createApi({
         params,
       }),
     }),
+    updateReservation: builder.mutation<ApiResponse, [Reservation['id'], UpdateReservationRequest]>(
+      {
+        query: ([reservationId, body]) => ({
+          url: `/reservations/${reservationId}`,
+          method: 'PATCH',
+          body,
+        }),
+      },
+    ),
   }),
 });
 
@@ -203,4 +213,5 @@ export const {
   useLazyGetAviableHoursByDateQuery,
   useCreateReservationMutation,
   useGetReservationsQuery,
+  useUpdateReservationMutation,
 } = api;
