@@ -1,6 +1,6 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
-import { Country, City, User, Service } from '@/types/models';
+import { Country, City, User, Service, Reservation } from '@/types/models';
 import { UserRole } from '@/types/enums';
 import {
   ApiResponse,
@@ -17,6 +17,7 @@ import {
   SearchCompaniesRequest,
   GetAviableHoursRequest,
   CreateReservationRequest,
+  SearchCompaniesResponse,
 } from '@/types/requests';
 
 export const api = createApi({
@@ -142,7 +143,10 @@ export const api = createApi({
         method: 'DELETE',
       }),
     }),
-    searchCompanies: builder.query<ApiResponse<User[]>, Partial<SearchCompaniesRequest>>({
+    searchCompanies: builder.query<
+      ApiResponse<SearchCompaniesResponse>,
+      Partial<SearchCompaniesRequest>
+    >({
       query: (params) => ({
         url: '/companies',
         params,
@@ -165,6 +169,9 @@ export const api = createApi({
         method: 'POST',
         body: data,
       }),
+    }),
+    getReservations: builder.query<ApiResponse<Reservation[]>, void>({
+      query: () => '/reservations',
     }),
   }),
 });
@@ -191,4 +198,5 @@ export const {
   useGetCompanyDetailQuery,
   useLazyGetAviableHoursByDateQuery,
   useCreateReservationMutation,
+  useGetReservationsQuery,
 } = api;

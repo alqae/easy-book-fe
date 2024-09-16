@@ -15,6 +15,7 @@ import {
   CompanyDetailPage,
   UnauthorizedPage,
   NotFoundPage,
+  ReservationsPage,
 } from '@/pages';
 
 const Router: React.FC = () => (
@@ -34,6 +35,7 @@ const Router: React.FC = () => (
       <Route path="/" element={<HomePage />} />
       <Route path="/company/:id" element={<CompanyDetailPage />} />
       <Route path="/search" element={<SearchPage />} />
+      <Route path="/reservations" element={<ReservationsPage />} />
     </Route>
 
     {/* Status pages */}
