@@ -1,3 +1,5 @@
+import { User } from '../models';
+
 export interface SearchCompaniesRequest {
   // filters
   text?: string;
@@ -7,4 +9,9 @@ export interface SearchCompaniesRequest {
   // pagination
   limit: number;
   offset: number;
+}
+
+export interface SearchCompaniesResponse {
+  items: User[];
+  count: number;
 }

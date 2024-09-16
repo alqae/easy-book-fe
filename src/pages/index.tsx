@@ -7,3 +7,4 @@ export * from './Register';
 export * from './Search';
 export * from './Unauthorized';
 export * from './ForgotPassword';
+export * from './Reservations';

@@ -49,12 +49,12 @@ export const SearchPage: React.FC = () => {
     },
   );
 
-  const { data: companies = [] } = results || { data: [] };
+  const { items: companies = [], count } = results?.data ?? {
+    count: 0,
+    items: [],
+  };
 
-  const pageCount = React.useMemo(
-    () => Math.ceil(companies.length / itemsPerPage),
-    [companies.length],
-  );
+  const pageCount = React.useMemo(() => Math.ceil(count / itemsPerPage), [count, itemsPerPage]);
 
   return (
     <>

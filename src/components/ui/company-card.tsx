@@ -13,7 +13,7 @@ export const CompanyCard: React.FC<User> = ({
   id,
   firstName,
   lastName,
-  services,
+  services = [],
   address,
   avatar,
 }) => {
