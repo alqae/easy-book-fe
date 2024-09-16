@@ -78,6 +78,13 @@ export const ChoseDateAndTimeModal: React.FC<ChoseDateAndTimeModalProps> = ({
     }
   };
 
+  const reset = () => {
+    setSelectedService(undefined);
+    setSelectedDay(undefined);
+    setSelectedHour(undefined);
+    setShowCalendar(true);
+  };
+
   const onBook = async () => {
     if (!selectedDay || !selectedHour || !selectedService) {
       return;
@@ -111,7 +118,13 @@ export const ChoseDateAndTimeModal: React.FC<ChoseDateAndTimeModalProps> = ({
 
     toast({ variant: 'success', title: response.message });
     onBookHandler(selectedService);
-    onClose();
+
+    if (services.length === 1 || reservation) {
+      onClose();
+    } else {
+      handleNextService();
+      reset();
+    }
   };
 
   React.useEffect(() => {
@@ -127,10 +140,7 @@ export const ChoseDateAndTimeModal: React.FC<ChoseDateAndTimeModalProps> = ({
   // Reset calendar if hide modal
   React.useEffect(() => {
     if (!show) {
-      setSelectedService(undefined);
-      setSelectedDay(undefined);
-      setSelectedHour(undefined);
-      setShowCalendar(true);
+      reset();
     }
   }, [show]);
 

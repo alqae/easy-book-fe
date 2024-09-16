@@ -2,7 +2,7 @@ import React from 'react';
 import { LuAlarmClock } from 'react-icons/lu';
 import { FaMoneyBillWave, FaTrash } from 'react-icons/fa6';
 
-import { ChoseDateAndTimeModal } from '@/components/modals/ChoseDateAndTime';
+import { ChoseDateAndTimeModal } from '@/components/modals/ChoseDateAndTimeModal';
 import { Separator } from '@/components/ui/separator';
 import { Button } from '@/components/ui/button';
 import { Service } from '@/types/models';

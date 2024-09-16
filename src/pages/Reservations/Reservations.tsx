@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router';
 import React from 'react';
 
 import { useGetReservationsQuery, useUpdateReservationMutation } from '@/lib/api';
-import { ChoseDateAndTimeModal } from '@/components/modals/ChoseDateAndTime';
+import { ChoseDateAndTimeModal } from '@/components/modals/ChoseDateAndTimeModal';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { formatDate, getInitials, getURLByAttachment } from '@/lib/utils';
 import { selectUserLogged } from '@/store/slices/profile.slice';
@@ -143,7 +143,7 @@ export const ReservationsPage: React.FC = () => {
                 <TableCell>{formatDate(reservation.startTime)}</TableCell>
                 <TableCell>{reservation.service.duration}</TableCell>
                 <TableCell className="flex gap-2 items-center">
-                  {isBusiness ? (
+                  {isCustomer ? (
                     <>
                       <Avatar>
                         <AvatarImage src={getURLByAttachment(reservation.business.avatar)} />
@@ -155,7 +155,7 @@ export const ReservationsPage: React.FC = () => {
                         </AvatarFallback>
                       </Avatar>
 
-                      <div>{`${reservation.customer.firstName} ${reservation.customer.lastName}`}</div>
+                      <div>{`${reservation.business.firstName} ${reservation.business.lastName}`}</div>
                     </>
                   ) : (
                     <>
