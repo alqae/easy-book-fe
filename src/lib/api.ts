@@ -1,6 +1,6 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
-import { Country, City, User } from '@/types/models';
+import { Country, City, User, Service } from '@/types/models';
 import { UserRole } from '@/types/enums';
 import {
   ApiResponse,
@@ -12,6 +12,8 @@ import {
   UpdatePasswordRequest,
   UpdateProfileRequest,
   RefreshTokenResponse,
+  CreateServiceRequest,
+  UpdateServiceRequest,
 } from '@/types/requests';
 
 export const api = createApi({
@@ -117,6 +119,26 @@ export const api = createApi({
         body: { role: data },
       }),
     }),
+    createService: builder.mutation<ApiResponse<Service>, CreateServiceRequest>({
+      query: (data) => ({
+        url: '/services',
+        method: 'POST',
+        body: data,
+      }),
+    }),
+    updateService: builder.mutation<ApiResponse<Service>, [Service['id'], UpdateServiceRequest]>({
+      query: ([id, data]) => ({
+        url: `/services/${id}`,
+        method: 'PATCH',
+        body: data,
+      }),
+    }),
+    deleteService: builder.mutation<ApiResponse, Service['id']>({
+      query: (id) => ({
+        url: `/services/${id}`,
+        method: 'DELETE',
+      }),
+    }),
   }),
 });
 
@@ -135,4 +157,7 @@ export const {
   useResendVerificationEmailMutation,
   useRefreshTokenMutation,
   useDeleteAccountMutation,
+  useCreateServiceMutation,
+  useUpdateServiceMutation,
+  useDeleteServiceMutation,
 } = api;
