@@ -1,10 +1,12 @@
 import React from 'react';
 import * as Yup from 'yup';
 import { useForm } from 'react-hook-form';
+import ReactPaginate from 'react-paginate';
 import { yupResolver } from '@hookform/resolvers/yup';
 
+import { useGetCountriesQuery, useSearchCompaniesQuery } from '@/lib/api';
 import { BusinessCard } from '@/components/ui/business-card';
-import { useGetCountriesQuery } from '@/lib/api';
+import { getURLByAttachment } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Form } from '@/components/ui/form';
@@ -17,37 +19,78 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import {
+  Pagination,
+  // PaginationContent,
+  PaginationEllipsis,
+  // PaginationItem,
+  // PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from '@/components/ui/pagination';
+
+const formSchema = Yup.object().shape({
+  country: Yup.string().optional(),
+  city: Yup.string().required(),
+  text: Yup.string().required(),
+});
 
 export const SearchPage: React.FC = () => {
-  const { data: countries, isLoading, isError } = useGetCountriesQuery();
-
-  const formSchema = Yup.object().shape({
-    country: Yup.string().optional(),
-    query: Yup.string().required(),
-  });
+  const { data: countries, isLoading: isLoadingCountries, isError } = useGetCountriesQuery();
 
   const form = useForm({
     defaultValues: {
-      country: undefined,
-      query: '',
+      country: '',
+      city: '',
+      text: '',
     },
     resolver: yupResolver(formSchema),
   });
 
-  const query = form.watch('query');
+  // Search
+  const textSearch = form.watch('text');
+  const selectedCity = form.watch('city');
   const selectedCountry = form.watch('country');
+
+  // Pagination
+  const [currentPage, setCurrentPage] = React.useState(0);
+  const itemsPerPage = 10;
+
+  const onPageChange = ({ selected }: { selected: number }) => setCurrentPage(selected);
+
+  const { data: results, isLoading: isLoadingResults } = useSearchCompaniesQuery(
+    {
+      // 'text', 'country' and 'city' are used for filtering
+      city: selectedCity,
+      country: selectedCountry,
+      text: textSearch,
+      // 'limit' and 'offset' are used for pagination
+      limit: itemsPerPage,
+      offset: currentPage * itemsPerPage,
+    },
+    {
+      refetchOnMountOrArgChange: true,
+    },
+  );
+
+  const { data: companies = [] } = results || { data: [] };
+
+  const pageCount = React.useMemo(
+    () => Math.ceil(companies.length / itemsPerPage),
+    [companies.length],
+  );
 
   return (
     <Form {...form}>
       <div className="border-b py-5 mb-5">
         <div className="grid grid-cols-12 items-center gap-4 container">
           <div className="col-span-7">
-            <Input type="search" placeholder="Search for..." {...form.register('query')} />
+            <Input type="search" placeholder="Search for..." {...form.register('text')} />
           </div>
 
           <div className="col-span-4">
             <Select
-              disabled={isLoading || isError}
+              disabled={isLoadingCountries || isError}
               onValueChange={(value) => form.setValue('country', value)}
               value={form.watch('country')}
             >
@@ -74,9 +117,9 @@ export const SearchPage: React.FC = () => {
       </div>
 
       <div className="container">
-        {Boolean(query.length) && (
+        {Boolean(textSearch.length) && (
           <span className="block mb-5">
-            Results for &quot;<b>{query}&quot;</b>
+            Results for &quot;<b>{textSearch}&quot;</b>
             {selectedCountry && (
               <>
                 &nbsp;in <b>{selectedCountry}</b>
@@ -85,36 +128,41 @@ export const SearchPage: React.FC = () => {
           </span>
         )}
 
-        <div className="space-y-4">
-          <BusinessCard
-            fullName="Pretty Gal Lashes"
-            address="Cra. 50A #24 - 51, La Florida, Itagüi, Antioquia"
-            favs={35433}
-            services={[
-              'Haircut/color Consultation/NO ',
-              "Men's Haircut",
-              "Women's Haircut",
-              'Shampoo & blow dry',
-              'Men’s Clean up/ Fringe trim',
-              'Partial Highlights',
-              'Full Highlights',
-              'Partial Highlights & haircut',
-              'Balayage Full/ lived in blonding hair color a ',
-              'Balayage retouch',
-              'Balayage retouch & haircut',
-              'Foilayge',
-              'Face framing/money piece add o…',
-              'Toner ‘add on’',
-              'Full Tint',
-              'Tint Retouch',
-              'Tint & haircut',
-              'Keratin Smoothing treatment',
-              'OLAPLEX /Oribe Lux Treatment and Hair Mask',
-              'Specialty Styling',
-              'Perm/body waves',
-            ]}
-            imageUrl="https://github.com/shadcn.png"
-          />
+        <div className="space-y-3">
+          {isLoadingResults && <span>Loading...</span>}
+
+          {isError && <span>An error occurred</span>}
+
+          {!companies.length && <span>No results found</span>}
+
+          {companies.map((company) => (
+            <BusinessCard
+              key={company.id}
+              fullName={`${company.firstName} ${company.lastName}`}
+              address={company.address}
+              favs={999}
+              services={company.services}
+              imageUrl={getURLByAttachment(company.avatar)}
+            />
+          ))}
+
+          <Pagination>
+            <ReactPaginate
+              previousLabel={<PaginationPrevious href="#" />}
+              nextLabel={<PaginationNext href="#" />}
+              breakLabel={<PaginationEllipsis />}
+              pageCount={pageCount}
+              onPageChange={onPageChange}
+              forcePage={currentPage}
+              pageRangeDisplayed={itemsPerPage}
+              marginPagesDisplayed={1}
+              renderOnZeroPageCount={null}
+              containerClassName="pagination flex items-center justify-center gap-1"
+              pageLinkClassName="pagination-link"
+              activeLinkClassName="active underline underline-offset-4"
+              breakLinkClassName="pagination-ellipsis"
+            />
+          </Pagination>
         </div>
       </div>
     </Form>

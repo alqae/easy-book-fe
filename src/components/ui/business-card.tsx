@@ -4,17 +4,16 @@ import { GoDotFill } from 'react-icons/go';
 import { IoLocationSharp } from 'react-icons/io5';
 
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Service } from '@/types/models';
 import { ellipsis } from '@/lib/utils';
 import { Button } from './button';
-// import { Service } from '@/types/models';
 
 interface BusinessCardProps {
   fullName: string;
   address: string;
   favs: number;
   imageUrl: string;
-  services: string[];
-  // services: Service[];
+  services: Service[];
 }
 
 export const BusinessCard: React.FC<BusinessCardProps> = ({
@@ -28,7 +27,7 @@ export const BusinessCard: React.FC<BusinessCardProps> = ({
 
   const CATEGORIES_TO_DISPLAY_LIMIT = 5;
 
-  const servicesToDisplay = React.useMemo(() => {
+  const servicesToDisplay = React.useMemo<Service[]>(() => {
     if (services.length > CATEGORIES_TO_DISPLAY_LIMIT) {
       return showAll ? services : services.slice(0, CATEGORIES_TO_DISPLAY_LIMIT);
     }
@@ -37,7 +36,7 @@ export const BusinessCard: React.FC<BusinessCardProps> = ({
   }, [services, showAll]);
 
   return (
-    <button className="flex flex-nowrap row gap-4 rounded-lg border p-4 text-sm transition-all hover:bg-accent bg-muted w-full">
+    <div className="flex flex-nowrap row gap-4 rounded-lg border p-4 text-sm transition-all hover:bg-accent bg-muted w-full">
       <Avatar className="max-w-[7.5rem] w-full h-full">
         <AvatarImage src={imageUrl} alt={fullName} />
         <AvatarFallback>CN</AvatarFallback>
@@ -65,8 +64,8 @@ export const BusinessCard: React.FC<BusinessCardProps> = ({
             <span className="font-medium text-md">Services</span>
             <div className="flex items-center flex-wrap gap-2 text-sm">
               {servicesToDisplay.map((service, index) => (
-                <React.Fragment key={service}>
-                  <span>{ellipsis(service, 35)}</span>
+                <React.Fragment key={service.id}>
+                  <span>{ellipsis(service.name, 35)}</span>
                   {index !== servicesToDisplay.length - 1 && <GoDotFill />}
                 </React.Fragment>
               ))}
@@ -84,6 +83,6 @@ export const BusinessCard: React.FC<BusinessCardProps> = ({
           </div>
         </div>
       </div>
-    </button>
+    </div>
   );
 };

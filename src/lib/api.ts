@@ -14,6 +14,7 @@ import {
   RefreshTokenResponse,
   CreateServiceRequest,
   UpdateServiceRequest,
+  SearchCompaniesRequest,
 } from '@/types/requests';
 
 export const api = createApi({
@@ -139,6 +140,12 @@ export const api = createApi({
         method: 'DELETE',
       }),
     }),
+    searchCompanies: builder.query<ApiResponse<User[]>, Partial<SearchCompaniesRequest>>({
+      query: (params) => ({
+        url: '/companies',
+        params,
+      }),
+    }),
   }),
 });
 
@@ -160,4 +167,5 @@ export const {
   useCreateServiceMutation,
   useUpdateServiceMutation,
   useDeleteServiceMutation,
+  useSearchCompaniesQuery,
 } = api;
