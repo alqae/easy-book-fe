@@ -8,3 +8,4 @@ export * from './Search';
 export * from './Unauthorized';
 export * from './ForgotPassword';
 export * from './Reservations';
+export * from './CustomerDetail';

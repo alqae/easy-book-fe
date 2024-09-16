@@ -16,6 +16,7 @@ import {
   UnauthorizedPage,
   NotFoundPage,
   ReservationsPage,
+  CustomerDetailPage,
 } from '@/pages';
 
 const Router: React.FC = () => (
@@ -34,6 +35,7 @@ const Router: React.FC = () => (
       <Route path="/profile" element={<ProfilePage />} />
       <Route path="/" element={<HomePage />} />
       <Route path="/company/:id" element={<CompanyDetailPage />} />
+      <Route path="/customer/:id" element={<CustomerDetailPage />} />
       <Route path="/search" element={<SearchPage />} />
       <Route path="/reservations" element={<ReservationsPage />} />
     </Route>

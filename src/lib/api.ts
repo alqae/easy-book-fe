@@ -187,6 +187,11 @@ export const api = createApi({
         }),
       },
     ),
+    getCustomerDetail: builder.query<ApiResponse<User>, User['id']>({
+      query: (id) => ({
+        url: `/customers/${id}`,
+      }),
+    }),
   }),
 });
 
@@ -214,4 +219,5 @@ export const {
   useCreateReservationMutation,
   useGetReservationsQuery,
   useUpdateReservationMutation,
+  useGetCustomerDetailQuery,
 } = api;

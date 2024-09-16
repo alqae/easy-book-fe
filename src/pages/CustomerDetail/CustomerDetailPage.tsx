@@ -1,30 +1,25 @@
-import React from 'react';
-import { useParams } from 'react-router';
-import { MdOutlineFavorite } from 'react-icons/md';
-import { FetchBaseQueryError } from '@reduxjs/toolkit/query';
 import { HiOutlineExclamationTriangle } from 'react-icons/hi2';
+import { FetchBaseQueryError } from '@reduxjs/toolkit/query';
+import { MdOutlineFavorite } from 'react-icons/md';
+import { useParams } from 'react-router';
+import React from 'react';
 
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { getInitials, getURLByAttachment } from '@/lib/utils';
-import { useGetCompanyDetailQuery } from '@/lib/api';
-import { ServicesTab } from './tabs/ServicesTab';
-import { Button } from '@/components/ui/button';
+import { AboutTab } from '../CompanyDetail/tabs/AboutTab';
+import { useGetCustomerDetailQuery } from '@/lib/api';
 import { ApiResponse } from '@/types/requests';
-import { AboutTab } from './tabs/AboutTab';
-import { Service } from '@/types/models';
+import { Button } from '@/components/ui/button';
 
-export const CompanyDetailPage: React.FC = () => {
-  const [selectedServices, setSelectedServices] = React.useState<Service[]>([]);
-
+export const CustomerDetailPage: React.FC = () => {
   const { id = '0' } = useParams();
   const {
     data: response,
     isLoading,
     isError,
     error,
-  } = useGetCompanyDetailQuery(parseInt(id, 10), {
+  } = useGetCustomerDetailQuery(parseInt(id, 10), {
     refetchOnMountOrArgChange: true,
   });
 
@@ -48,16 +43,7 @@ export const CompanyDetailPage: React.FC = () => {
 
   if (!response) return null;
 
-  const {
-    avatar,
-    email,
-    firstName,
-    lastName,
-    address,
-    description,
-    phoneNumber,
-    services = [],
-  } = response.data;
+  const { avatar, email, firstName, lastName, address, description, phoneNumber } = response.data;
 
   return (
     <div className="space-y-6">
@@ -78,34 +64,12 @@ export const CompanyDetailPage: React.FC = () => {
       </div>
 
       <div className="container !mb-10">
-        <Tabs defaultValue="about" className="w-full space-y-6">
-          <TabsList className="w-full">
-            <TabsTrigger value="about" className="w-full">
-              About
-            </TabsTrigger>
-
-            <TabsTrigger value="services" className="w-full">
-              Services
-            </TabsTrigger>
-          </TabsList>
-
-          <TabsContent value="about">
-            <AboutTab
-              description={description}
-              phoneNumber={phoneNumber}
-              address={address}
-              email={email}
-            />
-          </TabsContent>
-
-          <TabsContent value="services">
-            <ServicesTab
-              services={services}
-              value={selectedServices}
-              onChange={setSelectedServices}
-            />
-          </TabsContent>
-        </Tabs>
+        <AboutTab
+          description={description}
+          phoneNumber={phoneNumber}
+          address={address}
+          email={email}
+        />
       </div>
     </div>
   );
