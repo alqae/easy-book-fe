@@ -1,0 +1,28 @@
+version: 2.1
+
+workflows:
+  build-workflow:
+    jobs:
+      - runner
+
+jobs:
+  runner:
+    resource_class: alqae/linode
+    machine: true
+    steps:
+      - checkout
+      - run:
+          name: Run Docker Compose Down
+          command: |
+            echo "Running docker compose down"
+            docker compose -f $(pwd)/docker-compose.yml down
+      - run:
+          name: Run Docker Compose Up
+          command: |
+            echo "Running docker compose up"
+            docker compose -f $(pwd)/docker-compose.yml up -d
+      - run:
+          name: Verify Docker Containers
+          command: |
+            echo "Listing Docker Containers"
+            docker ps
