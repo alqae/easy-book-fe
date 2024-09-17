@@ -8,10 +8,9 @@ services:
       dockerfile: Dockerfile
     environment:
       - VITE_API_BASE_URL=${API_BASE_URL}
+      - NODE_ENV=production
     ports:
       - "4173:4173"
-    environment:
-      - NODE_ENV=production
     networks:
       - easy_book_network
 
