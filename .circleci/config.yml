@@ -4,7 +4,6 @@ workflows:
   build-workflow:
     jobs:
       - deploy
-      - cleanup
 
 jobs:
   deploy:
@@ -32,12 +31,3 @@ jobs:
           command: |
             echo "Listing Docker Containers"
             docker ps
-  cleanup:
-      resource_class: alqae/linode
-      machine: true
-      steps:
-        - run:
-            name: Clean Up Workdir
-            command: |
-              sudo rm -rf /var/lib/circleci-runner/workdir/*
-              sudo chown -R circleci:circleci /var/lib/circleci-runner/workdir
