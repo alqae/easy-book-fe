@@ -25,7 +25,7 @@ import {
 export const api = createApi({
   reducerPath: 'api',
   baseQuery: fetchBaseQuery({
-    baseUrl: 'https://api.easybook.live/',
+    baseUrl: import.meta.env.VITE_API_BASE_URL,
     prepareHeaders: (headers) => {
       const accessToken = localStorage.getItem('accessToken');
       const refreshToken = localStorage.getItem('refreshToken');
