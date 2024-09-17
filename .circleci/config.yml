@@ -3,10 +3,11 @@ version: 2.1
 workflows:
   build-workflow:
     jobs:
-      - runner
+      - deploy
+      - cleanup
 
 jobs:
-  runner:
+  deploy:
     resource_class: alqae/linode
     machine: true
     steps:
@@ -17,6 +18,11 @@ jobs:
             echo "Running docker compose down"
             docker compose -f $(pwd)/docker-compose.yml down
       - run:
+          name: Build Docker Compose
+          command: |
+            echo "Building docker compose"
+            docker compose -f $(pwd)/docker-compose.yml build
+      - run:
           name: Run Docker Compose Up
           command: |
             echo "Running docker compose up"
@@ -26,3 +32,12 @@ jobs:
           command: |
             echo "Listing Docker Containers"
             docker ps
+  cleanup:
+      resource_class: alqae/linode
+      machine: true
+      steps:
+        - run:
+            name: Clean Up Workdir
+            command: |
+              sudo rm -rf /var/lib/circleci-runner/workdir/*
+              sudo chown -R circleci:circleci /var/lib/circleci-runner/workdir
