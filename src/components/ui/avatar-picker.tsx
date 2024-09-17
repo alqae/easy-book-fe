@@ -28,7 +28,7 @@ export const AvatarPicker: React.FC<AvatarPickerProps> = ({ value, onChange }) =
     formData.append('file', file);
 
     const response = await fetch(
-      `${import.meta.env.VITE_API_BASE_URL}/shared/upload-file/${AttachmentGroup.AVATARS}`,
+      `${import.meta.env.VITE_API_BASE_URL}shared/upload-file/${AttachmentGroup.AVATARS}`,
       {
         method: 'POST',
         body: formData,

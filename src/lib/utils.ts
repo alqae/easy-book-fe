@@ -21,7 +21,7 @@ export function getURLByAttachment(attachment?: Attachment): string {
   }
 
   const baseURl = import.meta.env.VITE_API_BASE_URL;
-  return `${baseURl}/shared/get-file/${attachment.id}`;
+  return `${baseURl}shared/get-file/${attachment.id}`;
 }
 
 export function parseDuration(duration: string): number {
